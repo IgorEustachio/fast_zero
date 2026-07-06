@@ -19,3 +19,7 @@ class UserPublic(BaseModel):  # schema out (schema de saída)
 
 class UserDB(UserSchema):
     id: int
+
+
+class UserList(BaseModel):
+    users: list[UserPublic]
