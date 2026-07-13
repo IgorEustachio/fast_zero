@@ -220,3 +220,8 @@ __marimo__/
 # Generated using ignr.py - github.com/Antrikshy/ignr.py
 
 'database.db' 
+
+# db related
+
+*.db
+*.sqlite3
