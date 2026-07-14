@@ -15,6 +15,7 @@ class UserPublic(BaseModel):  # schema out (schema de saída)
     id: int
     username: str
     email: EmailStr
+    model_config = ConfigDict(from_attributes=True)
 
 
 class UserDB(UserSchema):
