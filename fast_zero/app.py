@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from fast_zero.database import get_session
 from fast_zero.models import User
 from fast_zero.schemas import Message, UserList, UserPublic, UserSchema
+from fast_zero.security import get_password_hash
 
 app = FastAPI()
 
@@ -51,8 +52,12 @@ def create_user(user: UserSchema, session: Session = Depends(get_session)):
                 detail='Email already exists',
             )
 
+    hashed_password = get_password_hash(user.password)
+
     db_user = User(
-        username=user.username, password=user.password, email=user.email
+        email=user.email,
+        username=user.username,
+        password=hashed_password
     )
     session.add(db_user)
     session.commit()
@@ -82,7 +87,9 @@ def get_user_with_id(user_id: int, session: Session = Depends(get_session)):
 
 @app.put('/users/{user_id}', response_model=UserPublic)
 def update_user(
-    user_id: int, user: UserSchema, session: Session = Depends(get_session)
+    user_id: int,
+    user: UserSchema,
+    session: Session = Depends(get_session)
 ):
     db_user = session.scalar(select(User).where(User.id == user_id))
     if not db_user:
@@ -92,7 +99,7 @@ def update_user(
 
     try:
         db_user.username = user.username
-        db_user.password = user.password
+        db_user.password = get_password_hash(user.password)
         db_user.email = user.email
         session.commit()
         session.refresh(db_user)
