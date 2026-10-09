@@ -20,3 +20,8 @@ class UserPublic(BaseModel):  # schema out (schema de saída)
 
 class UserList(BaseModel):
     users: list[UserPublic]
+
+
+class Token(BaseModel):  # schema out (schema de saída)
+    access_token: str
+    token_type: str
