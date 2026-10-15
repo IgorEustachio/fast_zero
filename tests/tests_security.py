@@ -2,7 +2,10 @@ from http import HTTPStatus
 
 from jwt import decode
 
-from fast_zero.security import SECRET_KEY, create_access_token
+from fast_zero.security import (
+    SECRET_KEY,
+    create_access_token,
+)
 
 
 def test_jwt():

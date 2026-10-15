@@ -144,12 +144,13 @@ def login_for_access_token(
 
     user = session.scalar(select(User).where(User.email == form_data.username))
 
-    if not user:
+    if not user:  # verifica o email
         raise HTTPException(
             status_code=HTTPStatus.UNAUTHORIZED,
             detail='Incorrect email or password',
         )
 
+    # verifica a senha
     if not verify_password(form_data.password, user.password):
         raise HTTPException(
             status_code=HTTPStatus.UNAUTHORIZED,

@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from fast_zero.schemas import UserPublic
+from fast_zero.security import create_access_token
 
 
 def test_root_deve_retornar_ok_e_ola_mundo(client):
@@ -176,3 +177,27 @@ def test_delete_user_with_wrong_user(client, token):
 
     assert response.status_code == HTTPStatus.FORBIDDEN
     assert response.json() == {'detail': 'Not enough permissions'}
+
+
+def test_missing_email(client):
+    data = {'no-email': 'test'}
+    token = create_access_token(data)
+
+    response = client.delete(
+        '/users/1', headers={'Authorization': f'Bearer {token}'}
+    )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {'detail': 'Could not validate credentials'}
+
+def test_current_user_doesnt_exists(client):
+    data = {'sub': 'test@test'}
+    token = create_access_token(data)
+
+    response = client.delete(
+        '/users/1',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == HTTPStatus.UNAUTHORIZED
+    assert response.json() == {'detail': 'Could not validate credentials'}
