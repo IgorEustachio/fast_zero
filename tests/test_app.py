@@ -190,6 +190,7 @@ def test_missing_email(client):
     assert response.status_code == HTTPStatus.UNAUTHORIZED
     assert response.json() == {'detail': 'Could not validate credentials'}
 
+
 def test_current_user_doesnt_exists(client):
     data = {'sub': 'test@test'}
     token = create_access_token(data)

@@ -20,7 +20,7 @@ pwd_context = PasswordHash.recommended()
 
 
 def create_access_token(data: int):
-    to_encode = data.copy()
+    to_encode = data.copy()  # não é necessário, só precaução
     expire = datetime.now(tz=ZoneInfo('UTC')) + timedelta(
         minutes=ACCESS_TOKEN_EXPIRE_MINUTES
     )
@@ -40,7 +40,7 @@ def verify_password(plain_password: str, hashed_password: str):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
 
-def get_current_user(
+def get_current_user(  # valida o token e devolve de quem ele é
     session: Session = Depends(get_session),
     token: str = Depends(oauth2_scheme),
 ):
