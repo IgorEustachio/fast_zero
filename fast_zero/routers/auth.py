@@ -24,7 +24,7 @@ async def login_for_access_token(
 
     user = await session.scalar(
         select(User).where(User.email == form_data.username)
-        )
+    )
 
     if not user:  # verifica o email
         raise HTTPException(

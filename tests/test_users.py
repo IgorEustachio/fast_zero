@@ -91,12 +91,11 @@ def test_update_user(client, user, token):
             'password': 'mynewpassword',
         },
     )
-
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
         'username': 'bob',
         'email': 'bob@example.com',
-        'id': 1,
+        'id': user.id,
     }
 
 
@@ -147,8 +146,6 @@ def test_delete_user(client, user, token):
         f'/users/{user.id}',
         headers={'Authorization': f'Bearer {token}'},
     )
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'message': 'User deleted'}
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'message': 'User deleted'}

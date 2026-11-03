@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from http import HTTPStatus
+from typing import Annotated
 from zoneinfo import ZoneInfo
 
 from fastapi import Depends, HTTPException
@@ -7,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt import DecodeError, decode, encode
 from pwdlib import PasswordHash
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from fast_zero.database import get_session
 from fast_zero.models import User
@@ -15,6 +16,7 @@ from fast_zero.settings import Settings
 
 pwd_context = PasswordHash.recommended()
 settings = Settings()
+T_Session = Annotated[AsyncSession, Depends(get_session)]
 
 
 def create_access_token(data: int):
@@ -40,8 +42,8 @@ def verify_password(plain_password: str, hashed_password: str):
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/token')
 
 
-def get_current_user(  # valida o token e devolve de quem ele é
-    session: Session = Depends(get_session),
+async def get_current_user(  # valida o token e devolve de quem ele é
+    session: T_Session,
     token: str = Depends(oauth2_scheme),
 ):
     credentials_exception = HTTPException(
@@ -62,7 +64,9 @@ def get_current_user(  # valida o token e devolve de quem ele é
     except DecodeError:
         raise credentials_exception
 
-    user = session.scalar(select(User).where(User.email == subject_email))
+    user = await session.scalar(
+        select(User).where(User.email == subject_email)
+    )
 
     if not user:
         raise credentials_exception
