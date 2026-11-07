@@ -102,7 +102,7 @@ def test_token_expired_dont_refresh(client, user):
             '/auth/token',
             data={
                 'username': user.email,
-                'password': getattr(user, 'clean_password')
+                'password': getattr(user, 'clean_password'),
             },
         )
         assert response.status_code == HTTPStatus.OK

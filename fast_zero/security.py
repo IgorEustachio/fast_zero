@@ -17,6 +17,9 @@ from fast_zero.settings import Settings
 pwd_context = PasswordHash.recommended()
 settings = Settings()
 T_Session = Annotated[AsyncSession, Depends(get_session)]
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl='auth/token', refreshUrl='auth/refresh'
+)
 
 
 def create_access_token(data: int):
